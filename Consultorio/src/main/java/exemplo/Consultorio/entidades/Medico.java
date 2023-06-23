@@ -1,6 +1,7 @@
 package exemplo.Consultorio.entidades;
 
 import exemplo.Consultorio.Dtos.MedicoDto;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +9,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity(name = "Medicos")
 public class Medico {
@@ -15,8 +18,8 @@ public class Medico {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 	@Column(nullable = false)
-
 	private String nome;
 
 	@Column(nullable = false)
@@ -34,6 +37,10 @@ public class Medico {
 	
 	@Column(name = "Ativo")
 	private Boolean atividade = true;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	 @JoinColumn(name = "endereco_id")
+    private Endereco endereco;
 	
 	public Boolean isAtivo() {
 		return this.atividade;
@@ -53,6 +60,7 @@ public class Medico {
 	    this.crm = dto.crm();
 	    this.telefone = dto.telefone();
 	    this.especialidade = dto.especialidade();
+	    this.endereco = new Endereco(dto.endereco());
 	}
 
 	
@@ -102,6 +110,14 @@ public class Medico {
 	
 	public void setEspecialidade(Especialidade especialidade) {
 		this.especialidade = especialidade;
+	}
+
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
 	}
 	
 	

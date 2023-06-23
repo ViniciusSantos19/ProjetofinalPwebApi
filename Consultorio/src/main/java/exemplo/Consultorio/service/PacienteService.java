@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import exemplo.Consultorio.Dtos.PacienteDto;
+import exemplo.Consultorio.Dtos.PacienteListagemDto;
 import exemplo.Consultorio.entidades.Paciente;
 import exemplo.Consultorio.repositorios.PacienteRepository;
+import exemplo.Consultorio.utils.PacienteUtils;
 
 @Service
 public class PacienteService {
@@ -22,14 +24,11 @@ public class PacienteService {
 	@Autowired
 	private PacienteRepository repository;
 	
-	private List<PacienteDto> converteEmPacienteDto(List<Paciente> lista){
-		return lista.stream().map(a -> new PacienteDto(a.getNome(),
-				a.getTelefone(),
-				a.getEmail(),
-				a.getCpf())).collect(Collectors.toList());
+	private List<PacienteListagemDto> converteEmPacienteDto(List<Paciente> lista){
+		return lista.stream().map(a -> PacienteUtils.convertePacienteListagemDto(a)).collect(Collectors.toList());
 	}
 	
-	public List<PacienteDto> listarPacientes() {
+	public List<PacienteListagemDto> listarPacientes() {
         return this.converteEmPacienteDto(repository.findAll(Sort.by(Sort.Direction.ASC, "nome")));
     }
 	
@@ -41,11 +40,7 @@ public class PacienteService {
 	            paciente.setNome(pacienteDto.nome());
 	            paciente.setTelefone(pacienteDto.telefone());
 	            repository.save(paciente);
-	            return new ResponseEntity<PacienteDto>( new PacienteDto(
-	            		paciente.getNome(),
-	    				paciente.getTelefone(),
-	    				paciente.getEmail(),
-	    				paciente.getCpf()),HttpStatus.OK);
+	            return new ResponseEntity<PacienteDto>(PacienteUtils.convertePacienteDto(paciente),HttpStatus.OK);
 	        }
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
@@ -57,11 +52,7 @@ public class PacienteService {
 	            paciente.setId(id);
 	            paciente.setAtividade(false);
 	            
-	            ResponseEntity<PacienteDto> ent = new ResponseEntity<PacienteDto>(new PacienteDto(
-	            		paciente.getNome(),
-	    				paciente.getTelefone(),
-	    				paciente.getEmail(),
-	    				paciente.getCpf()),HttpStatus.OK);
+	            ResponseEntity<PacienteDto> ent = new ResponseEntity<PacienteDto>(PacienteUtils.convertePacienteDto(paciente),HttpStatus.OK);
 	            
 	            repository.save(paciente);
 	            
@@ -74,12 +65,7 @@ public class PacienteService {
 		   Paciente paciente = new Paciente(PacienteDto);
 		   repository.save(paciente);
 		   URI url = uriBuilder.path("/Pacientes/{id}").buildAndExpand(paciente.getId()).toUri();
-		   return ResponseEntity.created(url).body(new PacienteDto(
-				paciente.getNome(),
-   				paciente.getTelefone(),
-   				paciente.getEmail(),
-   				paciente.getCpf()
-				   ));
+		   return ResponseEntity.created(url).body(PacienteUtils.convertePacienteDto(paciente));
 	   }
 	   
 	

@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 
 import exemplo.Consultorio.Dtos.MedicoDto;
+import exemplo.Consultorio.Dtos.MedicoListagemDto;
 import exemplo.Consultorio.service.MedicoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ public class MedicoController {
 	private MedicoService service;
 	
 	@GetMapping
-	public List<MedicoDto> getAll(){
+	public List<MedicoListagemDto> getAll(){
 		return service.listarMedicos();
 	}
 	

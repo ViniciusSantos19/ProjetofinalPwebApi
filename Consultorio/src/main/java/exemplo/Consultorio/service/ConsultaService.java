@@ -21,6 +21,8 @@ import exemplo.Consultorio.erros.InsertAgendaExcption;
 import exemplo.Consultorio.repositorios.ConsultaRepository;
 import exemplo.Consultorio.repositorios.MedicoRepository;
 import exemplo.Consultorio.repositorios.PacienteRepository;
+import exemplo.Consultorio.utils.MedicoUtils;
+import exemplo.Consultorio.utils.PacienteUtils;
 
 @Service
 public class ConsultaService {
@@ -59,8 +61,8 @@ public class ConsultaService {
 	    }
 	
 	    private ConsultaDto converteEmConsultaDto(Consulta consulta) {
-	        PacienteDto pacienteDto = new PacienteDto(consulta.getPaciente().getNome(), consulta.getPaciente().getTelefone(), consulta.getPaciente().getEmail(), consulta.getPaciente().getCpf());
-	        MedicoDto medicoDto = new MedicoDto(consulta.getMedico().getNome(), consulta.getMedico().getTelefone(), consulta.getMedico().getEmail(), consulta.getMedico().getCrm(), consulta.getMedico().getEspecialidade());
+	        PacienteDto pacienteDto = PacienteUtils.convertePacienteDto(consulta.getPaciente());
+	        MedicoDto medicoDto = MedicoUtils.converteMedicoDto(consulta.getMedico());
 	        LocalDateTime dataHoraConsulta = consulta.getDataHora();
 	        return new ConsultaDto(pacienteDto, medicoDto, dataHoraConsulta);
 	    }

@@ -14,8 +14,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 
 import exemplo.Consultorio.Dtos.MedicoDto;
+import exemplo.Consultorio.Dtos.MedicoListagemDto;
+import exemplo.Consultorio.entidades.Endereco;
 import exemplo.Consultorio.entidades.Medico;
 import exemplo.Consultorio.repositorios.MedicoRepository;
+import exemplo.Consultorio.utils.MedicoUtils;
 
 @Service
 public class MedicoService {
@@ -23,15 +26,11 @@ public class MedicoService {
 	@Autowired
 	private MedicoRepository repository;
 	
-	private List<MedicoDto> converteEmMedicoDto(List<Medico> lista){
-		return lista.stream().map(a -> new MedicoDto(a.getNome(),
-				a.getTelefone(),
-				a.getEmail(),
-				a.getCrm(),
-				a.getEspecialidade())).collect(Collectors.toList());
+	private List<MedicoListagemDto> converteEmMedicoDto(List<Medico> lista){
+		return lista.stream().map(a -> MedicoUtils.converteMedicoListagemDto(a)).collect(Collectors.toList());
 	}
 	
-	public List<MedicoDto> listarMedicos() {
+	public List<MedicoListagemDto> listarMedicos() {
      
         return this.converteEmMedicoDto(repository.findAll(Sort.by(Sort.Direction.ASC, "nome")));
     }
@@ -43,12 +42,10 @@ public class MedicoService {
 	            medico.setId(id);
 	            medico.setNome(medicoDto.nome());
 	            medico.setTelefone(medicoDto.telefone());
+	            Endereco endereco = new Endereco(medicoDto.endereco());
+	            medico.setEndereco(endereco);
 	            repository.save(medico);
-	            return new ResponseEntity<MedicoDto>(new MedicoDto(medico.getNome(),
-	    				medico.getTelefone(),
-	    				medico.getEmail(),
-	    				medico.getCrm(),
-	    				medico.getEspecialidade()),HttpStatus.OK);
+	            return new ResponseEntity<MedicoDto>(MedicoUtils.converteMedicoDto(medico),HttpStatus.OK);
 	        }
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
@@ -61,11 +58,7 @@ public class MedicoService {
 	            medico.setAtividade(false);
 	            
 	            
-	            ResponseEntity<MedicoDto> ent = new ResponseEntity<MedicoDto>(new MedicoDto(medico.getNome(),
-	    				medico.getTelefone(),
-	    				medico.getEmail(),
-	    				medico.getCrm(),
-	    				medico.getEspecialidade()),HttpStatus.OK);
+	            ResponseEntity<MedicoDto> ent = new ResponseEntity<MedicoDto>(MedicoUtils.converteMedicoDto(medico),HttpStatus.OK);
 	            
 	            repository.save(medico);
 	            
@@ -78,13 +71,7 @@ public class MedicoService {
 		   Medico medico = new Medico(medicoDto);
 		   repository.save(medico);
 		   URI url = uriBuilder.path("/Medicos/{id}").buildAndExpand(medico.getId()).toUri();
-		   return ResponseEntity.created(url).body(new MedicoDto(
-				   medico.getNome(),
-				   medico.getTelefone(),
-				   medico.getEmail(),
-				   medico.getCrm(),
-				   medico.getEspecialidade()
-				   ));
+		   return ResponseEntity.created(url).body(MedicoUtils.converteMedicoDto(medico));
 	   }
              
 	   

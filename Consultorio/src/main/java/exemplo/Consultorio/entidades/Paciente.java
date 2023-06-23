@@ -1,11 +1,15 @@
 package exemplo.Consultorio.entidades;
 
 import exemplo.Consultorio.Dtos.PacienteDto;
+import exemplo.Consultorio.Dtos.PacienteListagemDto;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity(name = "Pacientes")
 public class Paciente {
@@ -27,6 +31,10 @@ public class Paciente {
 	@Column(name = "Ativo")
 	private Boolean atividade = true;
 	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "endereco_id")
+    private Endereco endereco;
+	
 	public Boolean isAtivo() {
 		return this.atividade;
 	}
@@ -44,6 +52,11 @@ public class Paciente {
 	    this.email = dto.email();
 	    this.cpf = dto.cpf();
 	    this.telefone = dto.telefone();
+	    this.endereco = new Endereco(dto.endereco());
+	}
+	
+	public Paciente(PacienteListagemDto dto) {
+		
 	}
 
 	
@@ -85,6 +98,14 @@ public class Paciente {
 	
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
+	}
+
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
 	}
 	
 	

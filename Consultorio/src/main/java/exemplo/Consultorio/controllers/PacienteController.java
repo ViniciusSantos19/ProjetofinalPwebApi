@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import exemplo.Consultorio.Dtos.PacienteDto;
+import exemplo.Consultorio.Dtos.PacienteListagemDto;
 import exemplo.Consultorio.service.PacienteService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public class PacienteController {
 	private PacienteService service;
 	
 	@GetMapping
-	public List<PacienteDto> getAll(){
+	public List<PacienteListagemDto> getAll(){
 		return service.listarPacientes();
 	}
 	
