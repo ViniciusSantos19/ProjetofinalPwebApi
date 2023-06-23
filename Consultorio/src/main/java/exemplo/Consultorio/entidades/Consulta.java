@@ -32,6 +32,8 @@ public class Consulta {
 	
 	@Column(name = "motivo_cancelamento")
 	private MotivoCancelamento motivoCancelamento;
+	
+	private Boolean cancelamento = true;
 
 	public Consulta() {
 		
@@ -73,6 +75,22 @@ public class Consulta {
 
 	public void setDataHora(LocalDateTime dataHora) {
 		this.dataHoraConsulta = dataHora;
+	}
+
+	public Boolean getCancelamento() {
+		return cancelamento;
+	}
+
+	public void setCancelamento(Boolean cancelamento) {
+		this.cancelamento = cancelamento;
+	}
+
+	public MotivoCancelamento getMotivoCancelamento() {
+		return motivoCancelamento;
+	}
+
+	public void setMotivoCancelamento(MotivoCancelamento motivoCancelamento) {
+		this.motivoCancelamento = motivoCancelamento;
 	}
 	
 	
