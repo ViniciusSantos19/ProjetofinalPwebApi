@@ -4,6 +4,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import exemplo.Consultorio.verificadores.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,6 @@ import exemplo.Consultorio.erros.InsertAgendaExcption;
 import exemplo.Consultorio.repositorios.ConsultaRepository;
 import exemplo.Consultorio.repositorios.MedicoRepository;
 import exemplo.Consultorio.repositorios.PacienteRepository;
-import exemplo.Consultorio.verificadores.ConsultaContext;
-import exemplo.Consultorio.verificadores.VerificaConsultaMedico;
-import exemplo.Consultorio.verificadores.VerificaConsultaPaciente;
-import exemplo.Consultorio.verificadores.VerificaHora;
-import exemplo.Consultorio.verificadores.VerificaMedico;
-import exemplo.Consultorio.verificadores.VerificaPaciente;
 
 @Service
 public class ConsultaService {
@@ -39,12 +34,12 @@ public class ConsultaService {
 	    @Autowired
 	    private MedicoRepository medicoRepository;
 	    
-	    public ResponseEntity<ConsultaDto> agendarConsulta(ConsultaInsertDto consultaDto, UriComponentsBuilder uriBuilder) throws InsertAgendaExcption {
+	    public ResponseEntity<ConsultaDto> agendarConsulta(ConsultaInsertDto consultaDto,LocalDateTime dataHora, UriComponentsBuilder uriBuilder) throws InsertAgendaExcption {
 	        
 	        Optional<Paciente> pacienteOptional = pacienteRepository.findById(consultaDto.pacienteId());
 	    	Optional<Medico> medicoOptional = medicoRepository.findById(consultaDto.medicoId());
 	    	
-	    	ConsultaContext contexto = new ConsultaContext(medicoOptional, pacienteOptional, consultaDto.dataHora());
+	    	ConsultaContext contexto = new ConsultaContext(medicoOptional, pacienteOptional, dataHora);
 	    	
 	    	realizarVerificações(contexto);
 	    	
@@ -75,12 +70,16 @@ public class ConsultaService {
 	    	VerificaPaciente verificaPaciente = new VerificaPaciente();
 	    	VerificaMedico verificaMedico = new VerificaMedico();
 	    	VerificaHora verificaHora = new VerificaHora();
+			VerificaDiaSemana verificaDiaSemana = new VerificaDiaSemana();
+			VerificaAntecedencia verificaAntecedencia = new VerificaAntecedencia();
 	    	VerificaConsultaPaciente verficaConsultaPaciente = new VerificaConsultaPaciente(consultaRepository);
 	    	VerificaConsultaMedico verificaConsultaMedico = new VerificaConsultaMedico(consultaRepository);
 	    	
 	    	verificaPaciente.setProximo(verificaMedico);
 	    	verificaMedico.setProximo(verificaHora);
-	    	verificaHora.setProximo(verficaConsultaPaciente);
+	    	verificaHora.setProximo(verificaDiaSemana);
+			verificaDiaSemana.setProximo(verificaAntecedencia);
+			verificaAntecedencia.setProximo(verficaConsultaPaciente);
 	    	verficaConsultaPaciente.setProximo(verificaConsultaMedico);
 	    	
 	    	verificaPaciente.verifica(contexto);

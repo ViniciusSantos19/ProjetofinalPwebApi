@@ -25,12 +25,12 @@ public class ConsultaController {
 	
 	@PostMapping()
 	public ResponseEntity<ConsultaDto> inserir(@RequestBody ConsultaInsertDto consultaDto,UriComponentsBuilder uriBuilder) throws InsertAgendaExcption{
-		LocalDateTime dataHoraConsulta = LocalDateTime.now();
+		LocalDateTime dataHoraConsulta = consultaDto.dataHora();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-		String formattedDateTime = dataHoraConsulta.format(formatter);
+		String formattedDateTime = consultaDto.dataHora().format(formatter);
 		dataHoraConsulta = LocalDateTime.parse(formattedDateTime);
 
-		return service.agendarConsulta(consultaDto, uriBuilder);
+		return service.agendarConsulta(consultaDto, dataHoraConsulta, uriBuilder);
 	}
 	
 }
