@@ -6,10 +6,12 @@ import java.util.Optional;
 
 import exemplo.Consultorio.verificadores.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import exemplo.Consultorio.Dtos.ConsultaDeleteDto;
 import exemplo.Consultorio.Dtos.ConsultaDto;
 import exemplo.Consultorio.Dtos.ConsultaInsertDto;
 import exemplo.Consultorio.Dtos.MedicoDto;
@@ -58,6 +60,18 @@ public class ConsultaService {
 	        
 	        URI url = uriBuilder.path("/Consultas/{id}").buildAndExpand(consulta.getId()).toUri();
 	        return ResponseEntity.created(url).body(converteEmConsultaDto(consulta));
+	    }
+	    
+	    public ResponseEntity<ConsultaDeleteDto> cancelarConsulta(Long id, ConsultaDeleteDto consultaDeleteDto){
+	    	Optional<Consulta> consultaOpitional = consultaRepository.findById(id);
+	    	if(consultaOpitional.isPresent()) {
+	    		Consulta consulta = consultaOpitional.get();
+	    		consulta.setCancelamento(false);
+	    		consulta.setMotivoCancelamento(consultaDeleteDto.motivoCancelamento());
+	    		consultaRepository.save(consulta);
+	    		
+	    	}
+	    	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
 	
 	    private ConsultaDto converteEmConsultaDto(Consulta consulta) {
