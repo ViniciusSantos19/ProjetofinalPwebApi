@@ -17,6 +17,7 @@ import exemplo.Consultorio.Dtos.ConsultaDeleteDto;
 import exemplo.Consultorio.Dtos.ConsultaDto;
 import exemplo.Consultorio.Dtos.ConsultaInsertDto;
 import exemplo.Consultorio.erros.InsertAgendaExcption;
+import exemplo.Consultorio.erros.SemMedicosDisponiveisException;
 import exemplo.Consultorio.service.ConsultaService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class ConsultaController {
 	private ConsultaService service;
 	
 	@PostMapping()
-	public ResponseEntity<ConsultaDto> inserir(@RequestBody ConsultaInsertDto consultaDto,UriComponentsBuilder uriBuilder) throws InsertAgendaExcption{
+	public ResponseEntity<ConsultaDto> inserir(@RequestBody ConsultaInsertDto consultaDto,UriComponentsBuilder uriBuilder) throws InsertAgendaExcption, SemMedicosDisponiveisException{
 		LocalDateTime dataHoraConsulta = consultaDto.dataHora();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 		String formattedDateTime = consultaDto.dataHora().format(formatter);
