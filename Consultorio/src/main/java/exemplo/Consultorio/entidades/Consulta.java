@@ -93,6 +93,12 @@ public class Consulta {
 		this.motivoCancelamento = motivoCancelamento;
 	}
 	
+	public String getPacienteNome() {
+		return this.paciente.getNome();
+	}
 	
+	public String getMedicoNome() {
+		return this.medico.getNome();
+	}
 	
 }

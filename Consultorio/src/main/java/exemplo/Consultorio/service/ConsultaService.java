@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import exemplo.Consultorio.Dtos.ConsultaDeletadaDto;
 import exemplo.Consultorio.Dtos.ConsultaDeleteDto;
 import exemplo.Consultorio.Dtos.ConsultaDto;
 import exemplo.Consultorio.Dtos.ConsultaInsertDto;
@@ -62,13 +63,19 @@ public class ConsultaService {
 	        return ResponseEntity.created(url).body(converteEmConsultaDto(consulta));
 	    }
 	    
-	    public ResponseEntity<ConsultaDeleteDto> cancelarConsulta(Long id, ConsultaDeleteDto consultaDeleteDto){
-	    	Optional<Consulta> consultaOpitional = consultaRepository.findById(id);
+	    public ResponseEntity<ConsultaDeletadaDto> cancelarConsulta(ConsultaDeleteDto consultaDeleteDto){
+	    	Optional<Consulta> consultaOpitional = consultaRepository.findById(consultaDeleteDto.id());
 	    	if(consultaOpitional.isPresent()) {
 	    		Consulta consulta = consultaOpitional.get();
-	    		consulta.setCancelamento(false);
-	    		consulta.setMotivoCancelamento(consultaDeleteDto.motivoCancelamento());
-	    		consultaRepository.save(consulta);
+	    		LocalDateTime dataDeCanlamento = LocalDateTime.now();
+	    		LocalDateTime dataConsulta = consulta.getDataHora();
+	    		
+	    		if(dataConsulta.isAfter(dataDeCanlamento.plusHours(24))){
+		    		consulta.setCancelamento(false);
+		    		consulta.setMotivoCancelamento(consultaDeleteDto.motivoCancelamento());
+		    		consultaRepository.save(consulta);
+		    		 return new ResponseEntity<ConsultaDeletadaDto>(new ConsultaDeletadaDto(consulta.getMedicoNome(), consulta.getPacienteNome(), consulta.getMotivoCancelamento(), dataDeCanlamento),HttpStatus.OK);
+	    		}
 	    		
 	    	}
 	    	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
