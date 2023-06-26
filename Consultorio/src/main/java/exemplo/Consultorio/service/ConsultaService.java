@@ -76,8 +76,8 @@ public class ConsultaService {
 	        return ResponseEntity.created(url).body(converteEmConsultaDto(consulta));
 	    }
 	    
-	    public ResponseEntity<ConsultaDeletadaDto> cancelarConsulta(ConsultaDeleteDto consultaDeleteDto){
-	    	Optional<Consulta> consultaOpitional = consultaRepository.findById(consultaDeleteDto.id());
+	    public ResponseEntity<ConsultaDeletadaDto> cancelarConsulta(ConsultaDeleteDto consultaDeleteDto, Long id){
+	    	Optional<Consulta> consultaOpitional = consultaRepository.findById(id);
 	    	if(consultaOpitional.isPresent()) {
 	    		Consulta consulta = consultaOpitional.get();
 	    		LocalDateTime dataDeCanlamento = LocalDateTime.now();

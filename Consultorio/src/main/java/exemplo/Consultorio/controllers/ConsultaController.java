@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,10 +40,10 @@ public class ConsultaController {
 		return service.agendarConsulta(consultaDto, dataHoraConsulta, uriBuilder);
 	}
 	
-	@DeleteMapping
+	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<ConsultaDeletadaDto> cancelarConsulta(@RequestBody @Valid ConsultaDeleteDto dto) {
-		return service.cancelarConsulta(dto);
+	public ResponseEntity<ConsultaDeletadaDto> cancelarConsulta(@RequestBody @Valid ConsultaDeleteDto dto, @PathVariable Long id) {
+		return service.cancelarConsulta(dto, id);
 	}
 	
 }
