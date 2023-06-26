@@ -2,9 +2,12 @@ package exemplo.Consultorio.service;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import exemplo.Consultorio.verificadores.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -22,6 +25,7 @@ import exemplo.Consultorio.entidades.Consulta;
 import exemplo.Consultorio.entidades.Medico;
 import exemplo.Consultorio.entidades.Paciente;
 import exemplo.Consultorio.erros.InsertAgendaExcption;
+import exemplo.Consultorio.erros.SemMedicosDisponiveisException;
 import exemplo.Consultorio.repositorios.ConsultaRepository;
 import exemplo.Consultorio.repositorios.MedicoRepository;
 import exemplo.Consultorio.repositorios.PacienteRepository;
@@ -40,18 +44,26 @@ public class ConsultaService {
 	    @Autowired
 	    private MedicoRepository medicoRepository;
 	    
-	    public ResponseEntity<ConsultaDto> agendarConsulta(ConsultaInsertDto consultaDto,LocalDateTime dataHora, UriComponentsBuilder uriBuilder) throws InsertAgendaExcption {
+	    public ResponseEntity<ConsultaDto> agendarConsulta(ConsultaInsertDto consultaDto,LocalDateTime dataHora, UriComponentsBuilder uriBuilder) throws InsertAgendaExcption, SemMedicosDisponiveisException {
 	        
-	        Optional<Paciente> pacienteOptional = pacienteRepository.findById(consultaDto.pacienteId());
-	    	Optional<Medico> medicoOptional = medicoRepository.findById(consultaDto.medicoId());
+	    	Optional<Medico> medicoOptional;
+	    	
+	    	if(consultaDto.medicoId() == null) {
+	    		medicoOptional= this.getMedicoAleatorio(dataHora);
+	    	}else {
+	    		medicoOptional = medicoRepository.findById(consultaDto.medicoId());
+	    		
+	    	}
+	    	
+	    	Optional<Paciente> pacienteOptional = pacienteRepository.findById(consultaDto.pacienteId());
 	    	
 	    	ConsultaContext contexto = new ConsultaContext(medicoOptional, pacienteOptional, dataHora);
 	    	
 	    	realizarVerificações(contexto);
 	    	
 	    	Paciente paciente = pacienteOptional.get();
-	        
-	        Medico medico = medicoOptional.get();
+	    	
+	    	Medico medico = medicoOptional.get();
 	     
 	        Consulta consulta = new Consulta();
 	        consulta.setPaciente(paciente);
@@ -109,6 +121,16 @@ public class ConsultaService {
 	    	verficaConsultaPaciente.setProximo(verificaConsultaMedico);
 	    	
 	    	verificaPaciente.verifica(contexto);
+	    }
+	    
+	    private Optional<Medico> getMedicoAleatorio(LocalDateTime dataHora) throws SemMedicosDisponiveisException {
+	    	List<Medico> medicosDisponiveis = consultaRepository.findMedicosDisponiveis(dataHora);
+	    	if(!medicosDisponiveis.isEmpty()) {
+	    		Random numAlatorio = new Random();
+	    		int num = numAlatorio.nextInt(medicosDisponiveis.size());
+	    		 return Optional.of(medicosDisponiveis.get(num));
+	    	}
+	    	throw new SemMedicosDisponiveisException("Nenhum médico disponivel no momento");
 	    }
 	    
 }
