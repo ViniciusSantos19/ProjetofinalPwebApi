@@ -17,7 +17,8 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long>{
 
 	public boolean existsByMedicoAndDataHoraConsulta(Medico medico, LocalDateTime dataHoraConsulta);
 
-	@Query("SELECT c.medico FROM Consulta c WHERE c.dataHora <> :dataHora")
-    List<Medico> findMedicosDisponiveis(@Param("dataHora") LocalDateTime dataHora);
+	@Query("SELECT c.medico FROM Consultas c WHERE c.dataHoraConsulta <> :dataHoraConsulta")
+	public List<Medico> findMedicosDisponiveis(@Param("dataHoraConsulta") LocalDateTime dataHoraConsulta);
+
 	
 }
