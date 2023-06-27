@@ -15,7 +15,7 @@ public class VerificaConsultaMedico extends VerificadorConsulta{
 	@Override
 	protected void verificaInterno(ConsultaContext contexto) throws InsertAgendaExcption {
 		
-		 if (consultaRepository.existsByMedicoAndDataHoraConsulta(contexto.getMedico().get(), contexto.getDataHora())) {
+		 if (consultaRepository.existsByMedicoAndDataHoraConsultaAndCancelamento(contexto.getMedico().get(), contexto.getDataHora() ,true)) {
 	        throw new InsertAgendaExcption("O médico já possui uma consulta na mesma data/hora");
 	     }
 		

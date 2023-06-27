@@ -13,11 +13,12 @@ import exemplo.Consultorio.entidades.Paciente;
 
 public interface ConsultaRepository extends JpaRepository<Consulta, Long>{
 
-	public boolean existsByPacienteAndDataHoraConsultaBetween(Paciente paciente, LocalDateTime inicio, LocalDateTime fim);
+	public boolean existsByMedicoAndDataHoraConsultaAndCancelamento(Medico medico, LocalDateTime dataHoraConsulta, boolean cancelamento);
 
-	public boolean existsByMedicoAndDataHoraConsulta(Medico medico, LocalDateTime dataHoraConsulta);
+	public boolean existsByPacienteAndDataHoraConsultaBetweenAndCancelamento(Paciente paciente, LocalDateTime inicio, LocalDateTime fim, boolean cancelamento);
 
-	@Query("SELECT c.medico FROM Consultas c WHERE c.dataHoraConsulta <> :dataHoraConsulta")
+	@Query("SELECT m FROM Medicos m WHERE m.id NOT IN " +
+	           "(SELECT c.medico.id FROM Consultas c WHERE c.dataHoraConsulta = :dataHoraConsulta)")
 	public List<Medico> findMedicosDisponiveis(@Param("dataHoraConsulta") LocalDateTime dataHoraConsulta);
 
 	

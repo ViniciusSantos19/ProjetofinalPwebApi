@@ -17,8 +17,8 @@ public class VerificaConsultaPaciente extends VerificadorConsulta{
 	@Override
 	protected void verificaInterno(ConsultaContext contexto) throws InsertAgendaExcption {
 		 LocalDate dataConsulta = contexto.getDataHora().toLocalDate();
-	        if (consultaRepository.existsByPacienteAndDataHoraConsultaBetween(contexto.getPaciente().get(), 
-	                dataConsulta.atStartOfDay(), dataConsulta.plusDays(1).atStartOfDay())) {
+	        if (consultaRepository.existsByPacienteAndDataHoraConsultaBetweenAndCancelamento(contexto.getPaciente().get(), 
+	                dataConsulta.atStartOfDay(), dataConsulta.plusDays(1).atStartOfDay(), true)) {
 	        	throw new InsertAgendaExcption("Já tem outra consulta do mesmo paciente");
 	        }
 		
