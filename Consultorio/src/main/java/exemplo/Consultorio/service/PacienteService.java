@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +30,12 @@ public class PacienteService {
 		return lista.stream().map(a -> PacienteUtils.convertePacienteListagemDto(a)).collect(Collectors.toList());
 	}
 	
-	public List<PacienteListagemDto> listarPacientes() {
-        return this.converteEmPacienteDto(repository.findAll(Sort.by(Sort.Direction.ASC, "nome")));
+	public List<PacienteListagemDto> listarPacientes(int pagina) {
+		int registrosPorPagina = 10;
+	    PageRequest pageRequest = PageRequest.of(pagina - 1, registrosPorPagina, Sort.by("nome").ascending());
+	    Page<Paciente> pacientesPage = repository.findAll(pageRequest);
+	    List<Paciente> pacientes = pacientesPage.getContent();
+        return this.converteEmPacienteDto(pacientes);
     }
 	
 	   public ResponseEntity<PacienteDto> updatePaciente(PacienteDto pacienteDto, Long id){

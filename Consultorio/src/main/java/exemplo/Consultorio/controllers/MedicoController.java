@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -29,8 +30,8 @@ public class MedicoController {
 	private MedicoService service;
 	
 	@GetMapping
-	public List<MedicoListagemDto> getAll(){
-		return service.listarMedicos();
+	public List<MedicoListagemDto> getAll(@RequestParam int pagina){
+		return service.listarMedicos(pagina);
 	}
 	
 	@PutMapping("/{id}")

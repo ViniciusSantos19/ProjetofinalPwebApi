@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import exemplo.Consultorio.Dtos.MedicoDto;
 import exemplo.Consultorio.Dtos.MedicoListagemDto;
 import exemplo.Consultorio.entidades.Endereco;
 import exemplo.Consultorio.entidades.Medico;
+import exemplo.Consultorio.entidades.Paciente;
 import exemplo.Consultorio.repositorios.MedicoRepository;
 import exemplo.Consultorio.utils.MedicoUtils;
 
@@ -30,9 +33,12 @@ public class MedicoService {
 		return lista.stream().map(a -> MedicoUtils.converteMedicoListagemDto(a)).collect(Collectors.toList());
 	}
 	
-	public List<MedicoListagemDto> listarMedicos() {
-     
-        return this.converteEmMedicoDto(repository.findAll(Sort.by(Sort.Direction.ASC, "nome")));
+	public List<MedicoListagemDto> listarMedicos(int pagina) {
+		int registrosPorPagina = 10;
+	    PageRequest pageRequest = PageRequest.of(pagina - 1, registrosPorPagina, Sort.by("nome").ascending());
+	    Page<Medico> medicosPage = repository.findAll(pageRequest);
+	    List<Medico> medicos = medicosPage.getContent();
+        return this.converteEmMedicoDto(medicos);
     }
 	
 	   public ResponseEntity<MedicoDto> updateMedico(MedicoDto medicoDto, Long id){
