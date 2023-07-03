@@ -19,7 +19,6 @@ import exemplo.Consultorio.Dtos.MedicoDto;
 import exemplo.Consultorio.Dtos.MedicoListagemDto;
 import exemplo.Consultorio.entidades.Endereco;
 import exemplo.Consultorio.entidades.Medico;
-import exemplo.Consultorio.entidades.Paciente;
 import exemplo.Consultorio.repositorios.MedicoRepository;
 import exemplo.Consultorio.utils.MedicoUtils;
 
@@ -41,11 +40,11 @@ public class MedicoService {
         return this.converteEmMedicoDto(medicos);
     }
 	
-	   public ResponseEntity<MedicoDto> updateMedico(MedicoDto medicoDto, Long id){
-	        Optional<Medico> medicoOptional = repository.findById(id);
+	   public ResponseEntity<MedicoDto> updateMedico(MedicoDto medicoDto, String crm){
+	        Optional<Medico> medicoOptional = repository.findByCrm(crm);
 	        if(medicoOptional.isPresent()){
 	            Medico medico = medicoOptional.get();
-	            medico.setId(id);
+	            medico.setCrm(crm);
 	            medico.setNome(medicoDto.nome());
 	            medico.setTelefone(medicoDto.telefone());
 	            Endereco endereco = new Endereco(medicoDto.endereco());
@@ -56,11 +55,11 @@ public class MedicoService {
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
 	   
-	   public ResponseEntity<MedicoDto> deleteMedico(Long id){
-	        Optional<Medico> medicoOptional = repository.findById(id);
+	   public ResponseEntity<MedicoDto> deleteMedico(String crm){
+	        Optional<Medico> medicoOptional = repository.findByCrm(crm);
 	        if(medicoOptional.isPresent()){
 	            Medico medico = medicoOptional.get();
-	            medico.setId(id);
+	            medico.setCrm(crm);;
 	            medico.setAtividade(false);
 	            
 	            

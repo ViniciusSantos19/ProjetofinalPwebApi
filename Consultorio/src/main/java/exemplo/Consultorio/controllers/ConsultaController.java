@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,7 @@ import exemplo.Consultorio.erros.SemMedicosDisponiveisException;
 import exemplo.Consultorio.service.ConsultaService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/Consultas")
 public class ConsultaController {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ import exemplo.Consultorio.Dtos.PacienteListagemDto;
 import exemplo.Consultorio.service.PacienteService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/Pacientes")
 public class PacienteController {
@@ -33,16 +34,16 @@ public class PacienteController {
 		return service.listarPacientes(pagina);
 	}
 	
-	@PutMapping("/{id}")
+	@PutMapping("/{cpf}")
     @Transactional
-    public ResponseEntity<PacienteDto> atualizar(@PathVariable Long id, @RequestBody @Valid PacienteDto pacienteDto){
-        return service.updatePaciente(pacienteDto, id);
+    public ResponseEntity<PacienteDto> atualizar(@PathVariable String cpf, @RequestBody @Valid PacienteDto pacienteDto){
+        return service.updatePaciente(pacienteDto, cpf);
     }
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{cpf}")
 	@Transactional
-    public ResponseEntity<PacienteDto> apagar(@PathVariable(value="id")  Long id){
-	        return service.deletePaciente(id);	    
+    public ResponseEntity<PacienteDto> apagar(@PathVariable(value="cpf")  String cpf){
+	        return service.deletePaciente(cpf);	    
 	}
 	
 	@PostMapping

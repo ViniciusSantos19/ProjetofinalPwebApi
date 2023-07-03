@@ -38,11 +38,11 @@ public class PacienteService {
         return this.converteEmPacienteDto(pacientes);
     }
 	
-	   public ResponseEntity<PacienteDto> updatePaciente(PacienteDto pacienteDto, Long id){
-	        Optional<Paciente> pacienteOptional = repository.findById(id);
+	   public ResponseEntity<PacienteDto> updatePaciente(PacienteDto pacienteDto, String cpf){
+	        Optional<Paciente> pacienteOptional = repository.findByCpf(cpf);
 	        if(pacienteOptional.isPresent()){
 	            Paciente paciente = pacienteOptional.get();
-	            paciente.setId(id);
+	            paciente.setCpf(cpf);;
 	            paciente.setNome(pacienteDto.nome());
 	            paciente.setTelefone(pacienteDto.telefone());
 	            repository.save(paciente);
@@ -51,11 +51,11 @@ public class PacienteService {
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
 	   
-	   public ResponseEntity<PacienteDto> deletePaciente(Long id){
-	        Optional<Paciente> pacienteOptional = repository.findById(id);
+	   public ResponseEntity<PacienteDto> deletePaciente(String cpf){
+	        Optional<Paciente> pacienteOptional = repository.findByCpf(cpf);
 	        if(pacienteOptional.isPresent()){
 	            Paciente paciente = pacienteOptional.get();
-	            paciente.setId(id);
+	            paciente.setCpf(cpf);
 	            paciente.setAtividade(false);
 	            
 	            ResponseEntity<PacienteDto> ent = new ResponseEntity<PacienteDto>(PacienteUtils.convertePacienteDto(paciente),HttpStatus.OK);
