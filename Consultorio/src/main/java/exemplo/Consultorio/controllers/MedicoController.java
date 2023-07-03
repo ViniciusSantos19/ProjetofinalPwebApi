@@ -43,7 +43,7 @@ public class MedicoController {
 	
 	@DeleteMapping("/{crm}")
 	@Transactional
-    public ResponseEntity<MedicoDto> apagar(@PathVariable(value="id")  String crm){
+    public ResponseEntity<MedicoDto> apagar(@PathVariable(value="crm")  String crm){
 	        return service.deleteMedico(crm);	    
 	}
 	

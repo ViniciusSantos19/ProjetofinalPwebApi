@@ -35,7 +35,7 @@ public class MedicoService {
 	public List<MedicoListagemDto> listarMedicos(int pagina) {
 		int registrosPorPagina = 10;
 	    PageRequest pageRequest = PageRequest.of(pagina - 1, registrosPorPagina, Sort.by("nome").ascending());
-	    Page<Medico> medicosPage = repository.findAll(pageRequest);
+	    Page<Medico> medicosPage = repository.findByAtivoTrue(pageRequest);
 	    List<Medico> medicos = medicosPage.getContent();
         return this.converteEmMedicoDto(medicos);
     }

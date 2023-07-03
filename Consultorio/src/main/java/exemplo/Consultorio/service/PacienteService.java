@@ -33,7 +33,7 @@ public class PacienteService {
 	public List<PacienteListagemDto> listarPacientes(int pagina) {
 		int registrosPorPagina = 10;
 	    PageRequest pageRequest = PageRequest.of(pagina - 1, registrosPorPagina, Sort.by("nome").ascending());
-	    Page<Paciente> pacientesPage = repository.findAll(pageRequest);
+	    Page<Paciente> pacientesPage = repository.findByAtivoTrue(pageRequest);
 	    List<Paciente> pacientes = pacientesPage.getContent();
         return this.converteEmPacienteDto(pacientes);
     }
