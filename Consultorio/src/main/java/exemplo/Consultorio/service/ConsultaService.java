@@ -47,14 +47,14 @@ public class ConsultaService {
 	        
 	    	Optional<Medico> medicoOptional;
 	    	
-	    	if(consultaDto.medicoId() == null) {
+	    	if(consultaDto.crm().isBlank()) {
 	    		medicoOptional= this.getMedicoAleatorio(dataHora);
 	    	}else {
-	    		medicoOptional = medicoRepository.findById(consultaDto.medicoId());
+	    		medicoOptional = medicoRepository.findByCrm(consultaDto.crm());
 	    		
 	    	}
 	    	
-	    	Optional<Paciente> pacienteOptional = pacienteRepository.findById(consultaDto.pacienteId());
+	    	Optional<Paciente> pacienteOptional = pacienteRepository.findByCpf(consultaDto.cpf());
 	    	
 	    	ConsultaContext contexto = new ConsultaContext(medicoOptional, pacienteOptional, dataHora);
 	    	
