@@ -1,5 +1,5 @@
 package exemplo.Consultorio.entidades;
 
 public enum MotivoCancelamento {
-	pacienteDesistiu, médicoCancelou, outros
+	pacienteDesistiu, medicoCancelou, outros
 }
