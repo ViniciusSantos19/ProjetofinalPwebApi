@@ -3,6 +3,8 @@ package exemplo.Consultorio.repositorios;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +22,8 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long>{
 	@Query("SELECT m FROM Medicos m WHERE m.id NOT IN " +
 	           "(SELECT c.medico.id FROM Consultas c WHERE c.dataHoraConsulta = :dataHoraConsulta)")
 	public List<Medico> findMedicosDisponiveis(@Param("dataHoraConsulta") LocalDateTime dataHoraConsulta);
-
+	
+	@Query("SELECT c FROM Consultas c WHERE c.cancelamento = true")
+    Page<Consulta> findByAtivoTrue(Pageable pageable);
 	
 }

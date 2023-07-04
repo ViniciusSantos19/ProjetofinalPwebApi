@@ -5,10 +5,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import exemplo.Consultorio.verificadores.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,7 @@ import exemplo.Consultorio.Dtos.ConsultaDeletadaDto;
 import exemplo.Consultorio.Dtos.ConsultaDeleteDto;
 import exemplo.Consultorio.Dtos.ConsultaDto;
 import exemplo.Consultorio.Dtos.ConsultaInsertDto;
+import exemplo.Consultorio.Dtos.ConsultaSelectDto;
 import exemplo.Consultorio.Dtos.MedicoDto;
 import exemplo.Consultorio.Dtos.PacienteDto;
 import exemplo.Consultorio.entidades.Consulta;
@@ -28,6 +33,7 @@ import exemplo.Consultorio.erros.SemMedicosDisponiveisException;
 import exemplo.Consultorio.repositorios.ConsultaRepository;
 import exemplo.Consultorio.repositorios.MedicoRepository;
 import exemplo.Consultorio.repositorios.PacienteRepository;
+import exemplo.Consultorio.utils.ConsultaUtils;
 import exemplo.Consultorio.utils.MedicoUtils;
 import exemplo.Consultorio.utils.PacienteUtils;
 
@@ -75,6 +81,18 @@ public class ConsultaService {
 	        return ResponseEntity.created(url).body(converteEmConsultaDto(consulta));
 	    }
 	    
+	    private List<ConsultaSelectDto> converteListaConsulta(List<Consulta> consultas) {	    	
+	    	return consultas.stream().map(a -> ConsultaUtils.converteConsultaEmSelect(a)).collect(Collectors.toList());
+	    }
+	    
+	    public List<ConsultaSelectDto> listarConsultas(int pagina) {
+	    	int registrosPorPagina = 10;
+		    PageRequest pageRequest = PageRequest.of(pagina - 1, registrosPorPagina, Sort.by("dataHoraConsulta").ascending());
+		    Page<Consulta> consultaPage = consultaRepository.findByAtivoTrue(pageRequest);
+		    List<Consulta> listaConsulta = consultaPage.getContent();
+		    return converteListaConsulta(listaConsulta);
+	    }
+	    
 	    public ResponseEntity<ConsultaDeletadaDto> cancelarConsulta(ConsultaDeleteDto consultaDeleteDto, Long id){
 	    	Optional<Consulta> consultaOpitional = consultaRepository.findById(id);
 	    	if(consultaOpitional.isPresent()) {
@@ -101,6 +119,8 @@ public class ConsultaService {
 	        LocalDateTime dataHoraConsulta = consulta.getDataHora();
 	        return new ConsultaDto(pacienteDto, medicoDto, dataHoraConsulta);
 	    }
+	    
+	    
 	    
 	    private void realizarVerificações(ConsultaContext contexto) throws InsertAgendaExcption {
 	    	

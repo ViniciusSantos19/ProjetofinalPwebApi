@@ -2,15 +2,18 @@ package exemplo.Consultorio.controllers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -18,6 +21,7 @@ import exemplo.Consultorio.Dtos.ConsultaDeletadaDto;
 import exemplo.Consultorio.Dtos.ConsultaDeleteDto;
 import exemplo.Consultorio.Dtos.ConsultaDto;
 import exemplo.Consultorio.Dtos.ConsultaInsertDto;
+import exemplo.Consultorio.Dtos.ConsultaSelectDto;
 import exemplo.Consultorio.erros.InsertAgendaExcption;
 import exemplo.Consultorio.erros.SemMedicosDisponiveisException;
 import exemplo.Consultorio.service.ConsultaService;
@@ -30,6 +34,11 @@ public class ConsultaController {
 	
 	@Autowired
 	private ConsultaService service;
+	
+	@GetMapping
+	public List<ConsultaSelectDto> getAllCosultas(@RequestParam int pagina) {
+		return service.listarConsultas(pagina);
+	}
 	
 	@PostMapping()
 	public ResponseEntity<ConsultaDto> inserir(@RequestBody ConsultaInsertDto consultaDto,UriComponentsBuilder uriBuilder) throws InsertAgendaExcption, SemMedicosDisponiveisException{
