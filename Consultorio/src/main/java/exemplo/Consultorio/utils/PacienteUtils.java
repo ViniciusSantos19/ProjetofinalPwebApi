@@ -13,4 +13,19 @@ public class PacienteUtils {
 	public static PacienteListagemDto convertePacienteListagemDto(Paciente paciente) {
 		return new PacienteListagemDto(paciente.getNome(), paciente.getEmail(), paciente.getCpf());
 	}
+	
+	public static void checaSePacienteMudou(Paciente paciente, PacienteDto dto) {
+		
+		if(!dto.cpf().isBlank()) {
+			paciente.setCpf(dto.cpf());
+		}
+		
+		if(!dto.telefone().isBlank()) {
+			paciente.setTelefone(dto.telefone());
+		}
+		
+		if(!dto.nome().isBlank()) {
+			paciente.setNome(dto.nome());	
+		}
+	}
 }

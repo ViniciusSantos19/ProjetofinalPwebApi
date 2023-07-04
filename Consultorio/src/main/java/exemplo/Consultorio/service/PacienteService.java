@@ -16,8 +16,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import exemplo.Consultorio.Dtos.PacienteDto;
 import exemplo.Consultorio.Dtos.PacienteListagemDto;
+import exemplo.Consultorio.entidades.Endereco;
 import exemplo.Consultorio.entidades.Paciente;
 import exemplo.Consultorio.repositorios.PacienteRepository;
+import exemplo.Consultorio.utils.EnderecoUtils;
 import exemplo.Consultorio.utils.PacienteUtils;
 
 @Service
@@ -42,9 +44,9 @@ public class PacienteService {
 	        Optional<Paciente> pacienteOptional = repository.findByCpf(cpf);
 	        if(pacienteOptional.isPresent()){
 	            Paciente paciente = pacienteOptional.get();
-	            paciente.setCpf(cpf);;
-	            paciente.setNome(pacienteDto.nome());
-	            paciente.setTelefone(pacienteDto.telefone());
+	            PacienteUtils.checaSePacienteMudou(paciente, pacienteDto);
+	            Endereco endereco = EnderecoUtils.checaSeEnderecoMudou(paciente.getEndereco(), pacienteDto.endereco());
+	            paciente.setEndereco(endereco);
 	            repository.save(paciente);
 	            return new ResponseEntity<PacienteDto>(PacienteUtils.convertePacienteDto(paciente),HttpStatus.OK);
 	        }

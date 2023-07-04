@@ -20,6 +20,7 @@ import exemplo.Consultorio.Dtos.MedicoListagemDto;
 import exemplo.Consultorio.entidades.Endereco;
 import exemplo.Consultorio.entidades.Medico;
 import exemplo.Consultorio.repositorios.MedicoRepository;
+import exemplo.Consultorio.utils.EnderecoUtils;
 import exemplo.Consultorio.utils.MedicoUtils;
 
 @Service
@@ -44,10 +45,8 @@ public class MedicoService {
 	        Optional<Medico> medicoOptional = repository.findByCrm(crm);
 	        if(medicoOptional.isPresent()){
 	            Medico medico = medicoOptional.get();
-	            medico.setCrm(crm);
-	            medico.setNome(medicoDto.nome());
-	            medico.setTelefone(medicoDto.telefone());
-	            Endereco endereco = new Endereco(medicoDto.endereco());
+	            MedicoUtils.checaSeMedicoMudou(medico, medicoDto);
+	            Endereco endereco = EnderecoUtils.checaSeEnderecoMudou(medico.getEndereco(), medicoDto.endereco());
 	            medico.setEndereco(endereco);
 	            repository.save(medico);
 	            return new ResponseEntity<MedicoDto>(MedicoUtils.converteMedicoDto(medico),HttpStatus.OK);
@@ -61,7 +60,6 @@ public class MedicoService {
 	            Medico medico = medicoOptional.get();
 	            medico.setCrm(crm);;
 	            medico.setAtividade(false);
-	            
 	            
 	            ResponseEntity<MedicoDto> ent = new ResponseEntity<MedicoDto>(MedicoUtils.converteMedicoDto(medico),HttpStatus.OK);
 	            
